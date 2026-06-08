@@ -1,6 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import {
-  ArrowForwardRounded,
   AutoAwesomeRounded,
   CurrencyRupeeRounded,
   ExpandMoreRounded,
@@ -9,13 +8,10 @@ import {
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import MotionFade from "../components/common/MotionFade";
-import LogoMark from "../components/brand/LogoMark";
-import HeroScene from "../components/home/HeroScene";
+import ReferenceHero from "../components/home/ReferenceHero";
 import {
-  brand,
   featureCards,
   faqItems,
-  heroHighlights,
   howItWorks,
   partnerLogos,
   testimonials,
@@ -51,47 +47,9 @@ const whyChooseItems = [
 export default function HomePage() {
   return (
     <div className="landing-page">
-      <section className="landing-hero">
-        <div className="container-shell landing-hero__grid">
-          <MotionFade className="landing-hero__visual" delay={0.08}>
-            <HeroScene />
-          </MotionFade>
+      <ReferenceHero />
 
-          <MotionFade className="landing-hero__copy">
-            <div className="landing-hero__brandmark">
-              <LogoMark />
-            </div>
-            <span className="landing-hero__badge">{brand.heroBadge}</span>
-            <h1 className="landing-hero__title landing-hero__title--centered">
-              Your Shipment
-              <br />
-              Our Commitment
-            </h1>
-            <p className="landing-hero__description landing-hero__description--primary">
-              Experience modern logistics solutions tailored to revolutionize your e-commerce business.
-            </p>
-            <div className="landing-hero__actions landing-hero__actions--compact">
-              <Link className="landing-button landing-button--primary" to="/rate-calculator">
-                Get Started
-              </Link>
-              <Link className="landing-button landing-button--secondary" to="/contact">
-                Book a Demo
-                <ArrowForwardRounded fontSize="small" />
-              </Link>
-            </div>
-            <div className="landing-hero__stats landing-hero__stats--stacked">
-              {heroHighlights.slice(0, 2).map((item, index) => (
-                <MotionFade key={item.label} className="landing-stat-pill" delay={0.12 + index * 0.06}>
-                  <strong>{item.value}</strong>
-                  <span>{item.label}</span>
-                </MotionFade>
-              ))}
-            </div>
-          </MotionFade>
-        </div>
-      </section>
-
-      <section className="landing-section landing-section--muted landing-section--overlap">
+      <section className="landing-section landing-section--muted">
         <div className="container-shell">
           <div className="trusted-brands-panel trusted-brands-panel--static">
             <div className="trusted-brands-panel__copy trusted-brands-panel__copy--center">

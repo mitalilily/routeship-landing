@@ -80,6 +80,14 @@ img {
   padding-top: var(--site-header-offset);
 }
 
+.app-shell--home .app-background {
+  display: none;
+}
+
+.app-shell--home .app-main {
+  padding-top: 0;
+}
+
 .page-loader {
   display: grid;
   place-items: center;
@@ -364,6 +372,357 @@ img {
 
 .landing-section--cta {
   padding-top: 52px;
+}
+
+.reference-hero {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: clamp(720px, 66.6667vw, 1024px);
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 34%, rgba(37, 99, 235, 0.12), transparent 32%),
+    linear-gradient(180deg, #f9fbff 0%, #eef4ff 100%);
+}
+
+.reference-hero__image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  user-select: none;
+}
+
+.reference-hero__motion-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.reference-hero__hotspot {
+  position: absolute;
+  z-index: 3;
+  display: block;
+  border-radius: 999px;
+  outline: 0;
+}
+
+.reference-hero__hotspot:focus-visible {
+  box-shadow: 0 0 0 3px rgba(18, 92, 255, 0.32);
+}
+
+.reference-hero__hotspot--solutions {
+  left: 25.6%;
+  top: 4.5%;
+  width: 6.7%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--integrations {
+  left: 33.9%;
+  top: 4.5%;
+  width: 7.6%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--pricing {
+  left: 41.7%;
+  top: 4.5%;
+  width: 5.3%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--resources {
+  left: 48.1%;
+  top: 4.5%;
+  width: 7.5%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--company {
+  left: 57.1%;
+  top: 4.5%;
+  width: 6.8%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--login {
+  left: 80.7%;
+  top: 4.4%;
+  width: 5.1%;
+  height: 4.2%;
+}
+
+.reference-hero__hotspot--top-cta {
+  left: 85.6%;
+  top: 3.4%;
+  width: 10.6%;
+  height: 5.1%;
+}
+
+.reference-hero__hotspot--main-cta {
+  left: 3.4%;
+  top: 59.3%;
+  width: 14.3%;
+  height: 5.7%;
+}
+
+.reference-hero__hotspot--demo {
+  left: 18.9%;
+  top: 59.4%;
+  width: 13.9%;
+  height: 5.5%;
+}
+
+.reference-hero__pulse {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+  background: rgba(244, 45, 58, 0.42);
+  box-shadow:
+    0 0 0 0 rgba(244, 45, 58, 0.34),
+    0 0 34px rgba(244, 45, 58, 0.46);
+  animation: heroPulse 2.8s ease-out infinite;
+}
+
+.reference-hero__pulse--map {
+  left: 67.85%;
+  top: 33.1%;
+  width: 2.8%;
+  aspect-ratio: 1;
+}
+
+.reference-hero__pulse--route {
+  left: 77.95%;
+  top: 52.7%;
+  width: 1.55%;
+  aspect-ratio: 1;
+  animation-delay: 0.48s;
+}
+
+.reference-hero__pulse--bottom {
+  left: 85.45%;
+  top: 72.5%;
+  width: 3.9%;
+  aspect-ratio: 1;
+  animation-delay: 0.96s;
+}
+
+.reference-hero__shimmer {
+  position: absolute;
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), rgba(239, 43, 56, 0.75), transparent);
+  filter: blur(0.2px);
+  opacity: 0;
+  transform-origin: left center;
+  animation: routeShimmer 4.6s ease-in-out infinite;
+}
+
+.reference-hero__shimmer--one {
+  left: 62%;
+  top: 39.2%;
+  width: 18%;
+  transform: rotate(-11deg);
+}
+
+.reference-hero__shimmer--two {
+  left: 73.1%;
+  top: 57.9%;
+  width: 15.5%;
+  transform: rotate(31deg);
+  animation-delay: 1.2s;
+}
+
+.reference-hero__shimmer--three {
+  left: 80.5%;
+  top: 76.1%;
+  width: 13.8%;
+  transform: rotate(-18deg);
+  animation-delay: 2.2s;
+}
+
+.reference-hero__van-glow {
+  position: absolute;
+  left: 52.2%;
+  top: 62.8%;
+  width: 25%;
+  height: 4%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(244, 45, 58, 0), rgba(244, 45, 58, 0.42), rgba(18, 92, 255, 0.32), rgba(244, 45, 58, 0));
+  filter: blur(12px);
+  opacity: 0.72;
+  animation: vanGlow 3.2s ease-in-out infinite;
+}
+
+.reference-hero__tail-light {
+  position: absolute;
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(244, 45, 58, 0), rgba(244, 45, 58, 0.96), rgba(244, 45, 58, 0));
+  filter: blur(1.2px);
+  opacity: 0;
+  animation: tailLight 2.4s ease-in-out infinite;
+}
+
+.reference-hero__tail-light--one {
+  left: 31%;
+  top: 61.6%;
+  width: 28%;
+}
+
+.reference-hero__tail-light--two {
+  left: 39%;
+  top: 64.1%;
+  width: 20%;
+  animation-delay: 0.52s;
+}
+
+.reference-hero__card-glow {
+  position: absolute;
+  right: 2.7%;
+  width: 14.7%;
+  height: 12.8%;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(18, 92, 255, 0.08));
+  box-shadow: 0 24px 42px rgba(18, 92, 255, 0.12);
+  animation: cardFloat 5.8s ease-in-out infinite;
+}
+
+.reference-hero__card-glow--tracking {
+  top: 18.2%;
+}
+
+.reference-hero__card-glow--rate {
+  top: 35.7%;
+  animation-delay: 0.7s;
+}
+
+.reference-hero__card-glow--delivery {
+  top: 52.5%;
+  animation-delay: 1.4s;
+}
+
+.reference-hero__scan-line {
+  position: absolute;
+  left: 54.8%;
+  top: 16.8%;
+  width: 24%;
+  height: 45%;
+  border-radius: 50%;
+  border: 1px solid rgba(18, 92, 255, 0.15);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  transform: rotate(-17deg);
+  animation: scanArc 6.5s ease-in-out infinite;
+}
+
+@keyframes heroPulse {
+  0% {
+    opacity: 0.86;
+    transform: scale(0.82);
+    box-shadow:
+      0 0 0 0 rgba(244, 45, 58, 0.34),
+      0 0 34px rgba(244, 45, 58, 0.46);
+  }
+
+  72% {
+    opacity: 0.18;
+    transform: scale(1.55);
+    box-shadow:
+      0 0 0 18px rgba(244, 45, 58, 0),
+      0 0 34px rgba(244, 45, 58, 0.14);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.65);
+  }
+}
+
+@keyframes routeShimmer {
+  0%,
+  16% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  44% {
+    opacity: 0.95;
+    clip-path: inset(0 0 0 0);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes vanGlow {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateX(-1.5%) scaleX(0.96);
+  }
+
+  50% {
+    opacity: 0.92;
+    transform: translateX(1.5%) scaleX(1.04);
+  }
+}
+
+@keyframes tailLight {
+  0% {
+    opacity: 0;
+    transform: translateX(16%);
+  }
+
+  35% {
+    opacity: 0.86;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-18%);
+  }
+}
+
+@keyframes cardFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes scanArc {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: rotate(-17deg) scale(0.98);
+  }
+
+  50% {
+    opacity: 0.58;
+    transform: rotate(-11deg) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reference-hero__motion-layer * {
+    animation: none !important;
+  }
 }
 
 .landing-hero {
@@ -1943,6 +2302,32 @@ img {
     display: inline-flex !important;
   }
 
+  .reference-hero {
+    height: 780px;
+    min-height: 780px;
+  }
+
+  .reference-hero__image {
+    width: 1260px;
+    max-width: none;
+    object-fit: cover;
+    object-position: 22% top;
+  }
+
+  .reference-hero__hotspot--solutions,
+  .reference-hero__hotspot--integrations,
+  .reference-hero__hotspot--pricing,
+  .reference-hero__hotspot--resources,
+  .reference-hero__hotspot--company,
+  .reference-hero__hotspot--login,
+  .reference-hero__hotspot--top-cta {
+    display: none;
+  }
+
+  .reference-hero__card-glow {
+    display: none;
+  }
+
   .landing-hero {
     min-height: auto;
     padding: 26px 0 64px;
@@ -2003,6 +2388,49 @@ img {
   .site-header__inner {
     min-height: 56px;
     padding: 8px 12px;
+  }
+
+  .reference-hero {
+    height: 680px;
+    min-height: 680px;
+  }
+
+  .reference-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 2;
+    height: 34%;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(248, 251, 255, 0), rgba(248, 251, 255, 0.82));
+  }
+
+  .reference-hero__image {
+    width: 1040px;
+    left: 0;
+    object-position: 18% top;
+  }
+
+  .reference-hero__hotspot--main-cta {
+    left: 5%;
+    top: 59.2%;
+    width: 38%;
+    height: 6%;
+  }
+
+  .reference-hero__hotspot--demo {
+    left: 46%;
+    top: 59.2%;
+    width: 40%;
+    height: 6%;
+  }
+
+  .reference-hero__pulse--map,
+  .reference-hero__pulse--route,
+  .reference-hero__pulse--bottom,
+  .reference-hero__shimmer,
+  .reference-hero__scan-line {
+    opacity: 0.65;
   }
 
   .logo-lockup--compact {
