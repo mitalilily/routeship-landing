@@ -46,8 +46,8 @@ export default function ContactPage() {
       <PageHero
         badge="Contact"
         caption="Premium logistics support"
-        description="Talk to the Shipzilla team about shipping setup, courier onboarding, pricing logic, branded tracking, or dispatch automation."
-        title="Let’s design your smarter shipping workflow."
+        description="Talk to the Intlexpress team about shipping setup, courier onboarding, pricing logic, branded tracking, or dispatch automation."
+        title="Let's design your smarter shipping workflow."
       />
 
       <section className="landing-section landing-section--muted">
@@ -55,15 +55,17 @@ export default function ContactPage() {
           <MotionFade>
             <Paper className="glass-panel contact-card" elevation={0}>
               <Typography className="contact-card__title" variant="h5">
-                Reach Shipzilla directly
+                Reach Intlexpress directly
               </Typography>
               <div className="contact-card__stack">
-                <div>
-                  <Typography className="contact-card__label" variant="body2">
-                    Founder
-                  </Typography>
-                  <Typography variant="body1">{brand.founder}</Typography>
-                </div>
+                {brand.founder ? (
+                  <div>
+                    <Typography className="contact-card__label" variant="body2">
+                      Founder
+                    </Typography>
+                    <Typography variant="body1">{brand.founder}</Typography>
+                  </div>
+                ) : null}
                 <div>
                   <Typography className="contact-card__label" variant="body2">
                     Phone
@@ -94,12 +96,14 @@ export default function ContactPage() {
                   </Typography>
                   <Typography variant="body1">{brand.address}</Typography>
                 </div>
-                <div>
-                  <Typography className="contact-card__label" variant="body2">
-                    GSTIN
-                  </Typography>
-                  <Typography variant="body1">{brand.gstin}</Typography>
-                </div>
+                {brand.gstin ? (
+                  <div>
+                    <Typography className="contact-card__label" variant="body2">
+                      GSTIN
+                    </Typography>
+                    <Typography variant="body1">{brand.gstin}</Typography>
+                  </div>
+                ) : null}
               </div>
             </Paper>
           </MotionFade>

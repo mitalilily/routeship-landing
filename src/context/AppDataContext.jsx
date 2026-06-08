@@ -3,7 +3,7 @@ import { loginUser } from "../services/api";
 
 const AppDataContext = createContext(null);
 
-const STORAGE_KEY = "choiceme-session";
+const STORAGE_KEY = "intlexpress-session";
 
 export function AppDataProvider({ children }) {
   const [session, setSession] = useState(null);

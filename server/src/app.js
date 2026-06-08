@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", service: "ChoiceMe Courier API" });
+  res.json({ status: "ok", service: "Intlexpress API" });
 });
 
 app.use("/api/auth", authRoutes);

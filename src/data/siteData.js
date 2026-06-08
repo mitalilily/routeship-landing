@@ -1,14 +1,13 @@
 export const brand = {
-  name: "Shipzilla",
-  logoSrc: "/brand/shipzilla-logo.png",
-  logoAlt: "Shipzilla logo",
-  phone: "8116858367",
-  supportPhone: "9064255724",
-  address: "Parulia, Purbasthali, Purba Barddhaman, West Bengal 713513",
-  email: "shipzilla05@gmail.com",
-  gstin: "19IWAPS4685D1Z0",
-  founder: "Suman Sarkar",
-  headline: "Ship Smarter with Shipzilla",
+  name: "Intlexpress",
+  logoAlt: "Intlexpress logo",
+  phone: "+91 00000 00000",
+  supportPhone: "+91 00000 00000",
+  address: "India",
+  email: "support@intlexpress.com",
+  gstin: "",
+  founder: "",
+  headline: "Ship Smarter with Intlexpress",
   subheadline:
     "Compare courier partners, automate dispatch, and keep every delivery visible from one premium logistics dashboard.",
   heroBadge: "Smart shipping aggregator for modern commerce teams",
@@ -66,7 +65,7 @@ export const howItWorks = [
   {
     title: "Import all orders instantly",
     description:
-      "Sync marketplace, store, WhatsApp, and offline orders into one Shipzilla operations layer.",
+      "Sync marketplace, store, WhatsApp, and offline orders into one Intlexpress operations layer.",
   },
   {
     title: "Compare rates in seconds",
@@ -101,7 +100,7 @@ export const featureCards = [
   {
     title: "Smart Courier Allocation",
     description:
-      "Let Shipzilla choose the best courier automatically based on SLA, price, and serviceability.",
+      "Let Intlexpress choose the best courier automatically based on SLA, price, and serviceability.",
     badge: "Smart Dispatch",
   },
   {
@@ -119,12 +118,12 @@ export const featureCards = [
   {
     title: "API and Workflow Ready",
     description:
-      "Plug Shipzilla into your current storefront, warehouse, or ERP stack without changing your route architecture.",
+      "Plug Intlexpress into your current storefront, warehouse, or ERP stack without changing your route architecture.",
     badge: "Easy Integrations",
   },
 ];
 
-export const whyShipzilla = [
+export const whyIntlexpress = [
   {
     title: "Reduce logistics cost",
     description: "Choose the best-fit courier partner per shipment instead of relying on a single network.",
@@ -180,7 +179,7 @@ export const pricingPreview = [
 export const testimonials = [
   {
     quote:
-      "Shipzilla helped us standardize dispatch across multiple courier partners and immediately cut shipping leakage. The dashboard feels premium and extremely practical.",
+      "Intlexpress helped us standardize dispatch across multiple courier partners and immediately cut shipping leakage. The dashboard feels premium and extremely practical.",
     name: "Anirban Dutta",
     role: "Founder, D2C Lifestyle Brand",
   },
@@ -192,7 +191,7 @@ export const testimonials = [
   },
   {
     quote:
-      "We wanted one brand-consistent system for booking, tracking, and returns. Shipzilla gave us exactly that without making the workflow harder.",
+      "We wanted one brand-consistent system for booking, tracking, and returns. Intlexpress gave us exactly that without making the workflow harder.",
     name: "Rahul Verma",
     role: "Operations Lead, Regional Commerce Network",
   },
@@ -200,9 +199,9 @@ export const testimonials = [
 
 export const faqItems = [
   {
-    question: "How does Shipzilla reduce courier costs?",
+    question: "How does Intlexpress reduce courier costs?",
     answer:
-      "Shipzilla compares multiple courier partners using weight, pincode, SLA, and payment mode so you can dispatch each order with the most efficient option.",
+      "Intlexpress compares multiple courier partners using weight, pincode, SLA, and payment mode so you can dispatch each order with the most efficient option.",
   },
   {
     question: "Can I track all deliveries from one dashboard?",
@@ -210,21 +209,21 @@ export const faqItems = [
       "Yes. Active orders, delivery milestones, courier status, and exceptions are unified into one tracking view for your team and customers.",
   },
   {
-    question: "Does Shipzilla support COD, returns, and NDR workflows?",
+    question: "Does Intlexpress support COD, returns, and NDR workflows?",
     answer:
       "Yes. The platform is designed for prepaid and COD shipments, failed delivery handling, return automation, and follow-up visibility.",
   },
   {
-    question: "Can Shipzilla integrate with my current systems?",
+    question: "Can Intlexpress integrate with my current systems?",
     answer:
-      "Yes. Shipzilla is API-ready, so you can connect it to stores, custom dashboards, warehouse systems, and other logistics workflows.",
+      "Yes. Intlexpress is API-ready, so you can connect it to stores, custom dashboards, warehouse systems, and other logistics workflows.",
   },
 ];
 
 export const trackingSamples = [
   {
-    trackingId: "SZL78254019",
-    orderId: "SZ-11892",
+    trackingId: "IXP78254019",
+    orderId: "IX-11892",
     customer: "Sana Mir",
     courier: "Delhivery Surface",
     destination: "Srinagar, Jammu & Kashmir",
@@ -235,8 +234,8 @@ export const trackingSamples = [
       {
         key: "placed",
         title: "Order imported",
-        note: "Shipment synced into Shipzilla from the storefront and validated successfully.",
-        location: "Shipzilla Seller Panel",
+        note: "Shipment synced into Intlexpress from the storefront and validated successfully.",
+        location: "Intlexpress Seller Panel",
         time: "09 Apr 2026, 09:12 AM",
       },
       {
@@ -270,8 +269,8 @@ export const trackingSamples = [
     ],
   },
   {
-    trackingId: "SZL11984027",
-    orderId: "SZ-10478",
+    trackingId: "IXP11984027",
+    orderId: "IX-10478",
     customer: "Aman Gupta",
     courier: "Blue Dart Express",
     destination: "Noida, Uttar Pradesh",
@@ -282,7 +281,7 @@ export const trackingSamples = [
       {
         key: "placed",
         title: "Order imported",
-        note: "Shipment details were pushed to Shipzilla from the merchant dashboard.",
+        note: "Shipment details were pushed to Intlexpress from the merchant dashboard.",
         location: "Delhi NCR Fulfillment",
         time: "07 Apr 2026, 08:02 AM",
       },
@@ -373,7 +372,7 @@ export const rateGuideSteps = [
     label: "Step 1",
     title: "Add pickup and delivery pin codes",
     description:
-      "Start with the lane so Shipzilla can determine serviceability, zone logic, and likely SLA.",
+      "Start with the lane so Intlexpress can determine serviceability, zone logic, and likely SLA.",
   },
   {
     label: "Step 2",
@@ -406,7 +405,7 @@ export const weightGuideSteps = [
     label: "Step 2",
     title: "Add the actual scale weight",
     description:
-      "Provide the package's real weight so Shipzilla can compare it against the volumetric result.",
+      "Provide the package's real weight so Intlexpress can compare it against the volumetric result.",
   },
   {
     label: "Step 3",

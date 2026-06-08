@@ -1,9 +1,19 @@
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import { ArrowForwardRounded, ExpandMoreRounded } from "@mui/icons-material";
+import {
+  ArrowForwardRounded,
+  AutoAwesomeRounded,
+  CurrencyRupeeRounded,
+  ExpandMoreRounded,
+  TuneRounded,
+  VerifiedRounded,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import MotionFade from "../components/common/MotionFade";
+import LogoMark from "../components/brand/LogoMark";
+import HeroScene from "../components/home/HeroScene";
 import {
   brand,
+  featureCards,
   faqItems,
   heroHighlights,
   howItWorks,
@@ -11,35 +21,27 @@ import {
   testimonials,
 } from "../data/siteData";
 
-const featurePosters = [
-  "https://fship.in/assets-new/images/Frame-197-img.png",
-  "https://fship.in/assets-new/images/Frame-160-new.png",
-  "https://fship.in/assets-new/images/Frame-163-img.png",
-  "https://fship.in/assets-new/images/Frame-171-img.png",
-  "https://fship.in/assets-new/images/Frame-170-img.png",
-];
-
 const whyChooseItems = [
   {
-    icon: "https://fship.in/assets-new/images/rs.png",
+    Icon: CurrencyRupeeRounded,
     title: "Affordable",
     description:
-      "Shipzilla gives growing brands courier tools and shipping rates that stay efficient without compromising reliability.",
+      "Intlexpress gives growing brands courier tools and shipping rates that stay efficient without compromising reliability.",
   },
   {
-    icon: "https://fship.in/assets-new/images/wire.png",
+    Icon: TuneRounded,
     title: "Customized Filters",
     description:
       "Fine-tune courier selection, payment modes, serviceability, and operational preferences based on your business logic.",
   },
   {
-    icon: "https://fship.in/assets-new/images/ai.png",
+    Icon: AutoAwesomeRounded,
     title: "Smart Courier Allocation",
     description:
       "Use smart allocation logic to route shipments faster, lower delivery costs, and improve success rate across lanes.",
   },
   {
-    icon: "https://fship.in/assets-new/images/badge.png",
+    Icon: VerifiedRounded,
     title: "Branded Tracking Page",
     description:
       "Deliver a polished branded tracking experience that keeps customers informed and reinforces trust after purchase.",
@@ -52,26 +54,15 @@ export default function HomePage() {
       <section className="landing-hero">
         <div className="container-shell landing-hero__grid">
           <MotionFade className="landing-hero__visual" delay={0.08}>
-            <div className="hero-visual-fship">
-              <img
-                alt="Delivery executive with parcel"
-                className="hero-visual-fship__rider"
-                src="https://fship.in/assets-new/images/indian-happy-delivery-man-standing-with-box-be-delivered_466689-96378%202.png"
-              />
-              <img
-                alt="Shipping analytics background"
-                className="hero-visual-fship__panel"
-                src="https://fship.in/assets-new/images/bg-counts.png"
-              />
-            </div>
+            <HeroScene />
           </MotionFade>
 
           <MotionFade className="landing-hero__copy">
             <div className="landing-hero__brandmark">
-              <img alt="Shipzilla logo" src={brand.logoSrc} />
+              <LogoMark />
             </div>
             <span className="landing-hero__badge">{brand.heroBadge}</span>
-            <h1 className="landing-hero__title landing-hero__title--fship">
+            <h1 className="landing-hero__title landing-hero__title--centered">
               Your Shipment
               <br />
               Our Commitment
@@ -107,7 +98,7 @@ export default function HomePage() {
               <span className="trusted-brands-panel__eyebrow">Trusted by Leading Brands</span>
               <h2>Trusted by Leading Brands</h2>
               <p>
-                Discover why modern ecommerce teams trust Shipzilla for courier comparison, branded tracking, fast dispatch, and dependable shipping operations.
+                Discover why modern ecommerce teams trust Intlexpress for courier comparison, branded tracking, fast dispatch, and dependable shipping operations.
               </p>
               <div className="trusted-brands-panel__cta">
                 <Link className="landing-button landing-button--primary" to="/rate-calculator">
@@ -129,7 +120,7 @@ export default function HomePage() {
       <section className="landing-section">
         <div className="container-shell">
           <div className="simple-section-heading">
-            <h2>How Shipzilla Works</h2>
+            <h2>How Intlexpress Works</h2>
             <p>Understand the shipping workflow in one clean sequence before you start dispatching at scale.</p>
           </div>
 
@@ -155,11 +146,13 @@ export default function HomePage() {
           </div>
 
           <div className="feature-poster-grid">
-            {featurePosters.map((src, index) => (
-              <MotionFade key={src} delay={index * 0.04}>
-                <a className="feature-poster-card" href="/rate-calculator">
-                  <img alt={`Shipzilla feature poster ${index + 1}`} src={src} />
-                </a>
+            {featureCards.slice(0, 4).map((item, index) => (
+              <MotionFade key={item.title} delay={index * 0.04}>
+                <Link className="feature-card feature-card--link" to="/rate-calculator">
+                  <span className="feature-card__badge">{item.badge}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </Link>
               </MotionFade>
             ))}
           </div>
@@ -182,7 +175,9 @@ export default function HomePage() {
               {whyChooseItems.map((item, index) => (
                 <MotionFade key={item.title} delay={index * 0.05}>
                   <article className="why-choose-block__item">
-                    <img alt={item.title} src={item.icon} />
+                    <span className="why-choose-block__icon">
+                      <item.Icon />
+                    </span>
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
                   </article>
@@ -243,7 +238,7 @@ export default function HomePage() {
               <span className="cta-band__eyebrow">Ready to ship smarter?</span>
               <h2>Give every order a premium delivery experience with one clear shipping workflow.</h2>
               <p>
-                Start with Shipzilla today to compare courier rates, automate dispatch, and scale your logistics with more confidence.
+                Start with Intlexpress today to compare courier rates, automate dispatch, and scale your logistics with more confidence.
               </p>
             </div>
             <div className="landing-hero__actions">

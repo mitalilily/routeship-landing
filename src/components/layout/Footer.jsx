@@ -26,10 +26,12 @@ export default function Footer() {
           <Typography className="site-footer__copy" variant="body2">
             {brand.subheadline}
           </Typography>
-          <div className="site-footer__meta">
-            <span>GSTIN: {brand.gstin}</span>
-            <span>Founder: {brand.founder}</span>
-          </div>
+          {brand.gstin || brand.founder ? (
+            <div className="site-footer__meta">
+              {brand.gstin ? <span>GSTIN: {brand.gstin}</span> : null}
+              {brand.founder ? <span>Founder: {brand.founder}</span> : null}
+            </div>
+          ) : null}
           <div className="site-footer__socials">
             {socialLinks.map((item) => (
               <IconButton
@@ -86,7 +88,7 @@ export default function Footer() {
 
       <div className="container-shell site-footer__bottom">
         <Typography variant="body2">
-          © {new Date().getFullYear()} {brand.name}. Premium logistics software for smarter shipping across India.
+          &copy; {new Date().getFullYear()} {brand.name}. Premium logistics software for smarter shipping across India.
         </Typography>
       </div>
     </footer>

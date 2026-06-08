@@ -24,7 +24,7 @@ export default function HeroScene() {
       >
         <div className="hero-scene__store-top">
           <StorefrontRounded />
-          <span>ChoiceMe Courier</span>
+          <span>Intlexpress</span>
         </div>
         <div className="hero-scene__store-body">
           <div className="hero-scene__door" />

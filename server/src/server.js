@@ -10,7 +10,7 @@ async function startServer() {
   await connectDatabase(process.env.MONGODB_URI);
 
   app.listen(PORT, () => {
-    console.log(`ChoiceMe Courier API listening on port ${PORT}`);
+    console.log(`Intlexpress API listening on port ${PORT}`);
   });
 }
 

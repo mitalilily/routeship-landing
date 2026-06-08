@@ -2,8 +2,8 @@ import { trackingSamples } from "../data/siteData";
 import { buildRateSummary, generateCourierQuotes } from "../utils/calculators";
 
 const validCredentials = {
-  email: "shipzilla05@gmail.com",
-  password: "Shipzilla@123",
+  email: "support@intlexpress.com",
+  password: "Intlexpress@123",
 };
 
 function wait(ms = 900) {
@@ -19,13 +19,13 @@ export async function mockLogin(credentials) {
     credentials.email?.toLowerCase() !== validCredentials.email ||
     credentials.password !== validCredentials.password
   ) {
-    throw new Error("Invalid email or password. Use the demo Shipzilla credentials shown on the page.");
+    throw new Error("Invalid email or password. Use the demo Intlexpress credentials shown on the page.");
   }
 
   return {
     token: "mock-jwt-token",
     user: {
-      name: "Shipzilla Operations",
+      name: "Intlexpress Operations",
       email: validCredentials.email,
       role: "admin",
     },
@@ -39,7 +39,7 @@ export async function mockTrackShipment(trackingId) {
   );
 
   if (!shipment) {
-    throw new Error("Tracking ID not found in demo data. Try SZL78254019 or SZL11984027.");
+    throw new Error("Tracking ID not found in demo data. Try IXP78254019 or IXP11984027.");
   }
 
   const activeStep = shipment.timeline.findIndex((item) =>
@@ -76,6 +76,6 @@ export async function mockSubmitContact(payload) {
 
   return {
     ok: true,
-    message: "Your inquiry has been queued for the Shipzilla team.",
+    message: "Your inquiry has been queued for the Intlexpress team.",
   };
 }

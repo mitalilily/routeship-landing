@@ -256,24 +256,48 @@ img {
 .logo-lockup {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
   max-width: min(100%, 210px);
+  color: var(--text);
 }
 
 .logo-lockup--compact {
-  max-width: min(100%, 156px);
+  max-width: min(100%, 176px);
 }
 
 .logo-mark {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  max-height: 92px;
-  height: auto;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--hover) 100%);
+  color: #fff;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0;
   filter: drop-shadow(0 14px 28px rgba(93, 35, 148, 0.12));
 }
 
 .logo-mark--compact {
-  max-height: 56px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+}
+
+.logo-word {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.logo-lockup--compact .logo-word {
+  font-size: 1.02rem;
 }
 
 .landing-button {
@@ -404,11 +428,6 @@ img {
   margin-bottom: 18px;
 }
 
-.landing-hero__brandmark img {
-  width: 120px;
-  height: auto;
-}
-
 .landing-hero__badge,
 .page-hero__badge,
 .showcase-card__eyebrow,
@@ -443,7 +462,7 @@ img {
   line-height: 0.98;
 }
 
-.landing-hero__title--fship {
+.landing-hero__title--centered {
   margin-top: 18px;
   text-align: center;
 }
@@ -577,29 +596,201 @@ img {
   position: relative;
 }
 
-.hero-visual-fship {
+.hero-scene {
   position: relative;
   min-height: 640px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  border-radius: 36px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(244, 239, 251, 0.96)),
+    repeating-linear-gradient(90deg, rgba(93, 35, 148, 0.08) 0 1px, transparent 1px 82px);
+  box-shadow: var(--shadow);
   transform: translateY(-22px);
 }
 
-.hero-visual-fship__panel {
-  width: min(100%, 860px);
-  max-width: none;
-  filter: drop-shadow(0 24px 54px rgba(67, 22, 109, 0.14));
-  transform: translateX(-16px);
+.hero-scene__store,
+.hero-scene__map,
+.hero-scene__hud,
+.hero-scene__delivery-card {
+  position: absolute;
+  border: 1px solid rgba(229, 220, 243, 0.9);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 22px 48px rgba(67, 22, 109, 0.1);
+  backdrop-filter: blur(14px);
 }
 
-.hero-visual-fship__rider {
+.hero-scene__store {
+  left: 8%;
+  top: 12%;
+  width: min(48%, 320px);
+  border-radius: 28px;
+  overflow: hidden;
+}
+
+.hero-scene__store-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--hover) 100%);
+  color: #fff;
+  font-weight: 800;
+}
+
+.hero-scene__store-body {
+  display: grid;
+  grid-template-columns: 0.8fr 1fr 1fr;
+  gap: 14px;
+  min-height: 150px;
+  padding: 22px;
+  align-items: end;
+}
+
+.hero-scene__door,
+.hero-scene__window {
+  border-radius: 14px 14px 0 0;
+  background: linear-gradient(180deg, #f4effb 0%, #ffffff 100%);
+  border: 1px solid var(--border-soft);
+}
+
+.hero-scene__door {
+  height: 108px;
+}
+
+.hero-scene__window {
+  height: 74px;
+}
+
+.hero-scene__truck {
   position: absolute;
-  left: 19%;
-  bottom: 13%;
-  width: min(42%, 360px);
-  z-index: 2;
-  filter: drop-shadow(0 18px 32px rgba(67, 22, 109, 0.16));
+  left: 44%;
+  top: 34%;
+  display: grid;
+  place-items: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 28px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  box-shadow: 0 26px 48px rgba(67, 22, 109, 0.24);
+}
+
+.hero-scene__truck svg {
+  font-size: 2.7rem;
+}
+
+.hero-scene__truck--secondary {
+  top: 58%;
+  background: linear-gradient(135deg, var(--accent-dark), var(--hover));
+}
+
+.hero-scene__parcel {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  color: var(--primary);
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 18px 34px rgba(67, 22, 109, 0.1);
+}
+
+.hero-scene__parcel--1 {
+  left: 18%;
+  bottom: 22%;
+}
+
+.hero-scene__parcel--2 {
+  left: 52%;
+  top: 14%;
+}
+
+.hero-scene__parcel--3 {
+  right: 10%;
+  bottom: 14%;
+}
+
+.hero-scene__map {
+  right: 8%;
+  top: 18%;
+  width: min(44%, 330px);
+  border-radius: 30px;
+  padding: 22px;
+}
+
+.hero-scene__map-header,
+.hero-scene__delivery-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.hero-scene__route {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 120px;
+}
+
+.hero-scene__route-pin {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  color: #fff;
+  background: var(--primary);
+}
+
+.hero-scene__route-line {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--hover));
+  transform-origin: left center;
+}
+
+.hero-scene__delivery-card {
+  position: static;
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border-radius: 18px;
+}
+
+.hero-scene__delivery-card span,
+.hero-scene__hud-label {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.hero-scene__hud {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 22px;
+}
+
+.hero-scene__hud strong {
+  color: var(--primary);
+  font-size: 1.25rem;
+}
+
+.hero-scene__hud--left {
+  left: 12%;
+  bottom: 12%;
+}
+
+.hero-scene__hud--right {
+  right: 12%;
+  bottom: 28%;
 }
 
 .hero-dashboard {
@@ -1772,19 +1963,19 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .hero-visual-fship {
+  .hero-scene {
     min-height: 420px;
     transform: translateY(-10px);
   }
 
-  .hero-visual-fship__panel {
-    transform: none;
+  .hero-scene__store,
+  .hero-scene__map {
+    width: min(46%, 280px);
   }
 
-  .hero-visual-fship__rider {
-    left: 16%;
-    bottom: 10%;
-    width: min(38%, 240px);
+  .hero-scene__hud--right {
+    right: 8%;
+    bottom: 16%;
   }
 
   .tracking-spotlight,
@@ -1867,14 +2058,15 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .hero-visual-fship {
+  .hero-scene {
     min-height: 320px;
     transform: none;
   }
 
-  .hero-visual-fship__rider {
-    left: 14%;
-    width: min(44%, 170px);
+  .hero-scene__store,
+  .hero-scene__map,
+  .hero-scene__hud {
+    transform: scale(0.86);
   }
 
   .landing-stat-pill,

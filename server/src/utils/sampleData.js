@@ -1,27 +1,27 @@
 export const sampleUsers = [
   {
     name: "Operations Manager",
-    email: "ops@choicemecourier.com",
-    password: "ChoiceMe@123",
+    email: "ops@intlexpress.com",
+    password: "Intlexpress@123",
     role: "admin",
-    phone: "9906690088",
-    company: "ChoiceMe Courier",
+    phone: "+910000000000",
+    company: "Intlexpress",
   },
   {
     name: "Dispatch Analyst",
-    email: "dispatch@choicemecourier.com",
-    password: "ChoiceMe@123",
+    email: "dispatch@intlexpress.com",
+    password: "Intlexpress@123",
     role: "manager",
-    phone: "9906690088",
-    company: "ChoiceMe Courier",
+    phone: "+910000000000",
+    company: "Intlexpress",
   },
 ];
 
 export function buildSampleShipments(userId) {
   return [
     {
-      trackingId: "CMC78254019",
-      orderId: "ORD-11892",
+      trackingId: "IXP78254019",
+      orderId: "IX-11892",
       customerName: "Sana Mir",
       contactPhone: "9797001122",
       originPincode: "193123",
@@ -39,7 +39,7 @@ export function buildSampleShipments(userId) {
         {
           key: "placed",
           title: "Order placed",
-          note: "Shipment booked on the ChoiceMe dashboard",
+          note: "Shipment booked on the Intlexpress dashboard",
           location: "Baramulla Hub",
           time: new Date("2026-04-09T09:12:00+05:30"),
         },
@@ -60,8 +60,8 @@ export function buildSampleShipments(userId) {
       ],
     },
     {
-      trackingId: "CMC11984027",
-      orderId: "ORD-10478",
+      trackingId: "IXP11984027",
+      orderId: "IX-10478",
       customerName: "Aman Gupta",
       contactPhone: "9811155512",
       originPincode: "110001",

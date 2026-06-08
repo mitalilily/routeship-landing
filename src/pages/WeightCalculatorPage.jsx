@@ -95,7 +95,7 @@ export default function WeightCalculatorPage() {
             <Paper className="glass-panel weight-controls" elevation={0}>
               <Typography variant="h5">Parcel dimensions</Typography>
               <Typography className="weight-controls__copy" variant="body2">
-                Shipzilla uses the standard divisor of 5000 for volumetric courier billing.
+                Intlexpress uses the standard divisor of 5000 for volumetric courier billing.
               </Typography>
 
               <div className="weight-slider-group">

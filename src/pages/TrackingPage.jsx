@@ -1,4 +1,4 @@
-import { useEffect, useState, startTransition } from "react";
+import { useCallback, useEffect, useState, startTransition } from "react";
 import { Alert, Button, Chip, Paper, Stack, TextField, Typography } from "@mui/material";
 import LoadingCard from "../components/common/LoadingCard";
 import MotionFade from "../components/common/MotionFade";
@@ -14,7 +14,7 @@ export default function TrackingPage() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
 
-  const runTracking = async (id = trackingId) => {
+  const runTracking = useCallback(async (id) => {
     setLoading(true);
     setError("");
 
@@ -31,11 +31,11 @@ export default function TrackingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     runTracking(trackingSamples[0].trackingId);
-  }, []);
+  }, [runTracking]);
 
   return (
     <div className="inner-page">
@@ -59,7 +59,7 @@ export default function TrackingPage() {
                 className="calculator-form"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  runTracking();
+                  runTracking(trackingId);
                 }}
               >
                 <TextField
@@ -116,10 +116,10 @@ export default function TrackingPage() {
                   <div>
                     <Typography variant="overline">Shipment spotlight</Typography>
                     <Typography variant="h4">
-                      {result.trackingId} · {result.orderId}
+                      {result.trackingId} - {result.orderId}
                     </Typography>
                     <Typography className="tracking-spotlight__copy" variant="body2">
-                      {result.customer} · {result.courier} · {result.paymentType}
+                      {result.customer} - {result.courier} - {result.paymentType}
                     </Typography>
                   </div>
                   <Chip className="tracking-spotlight__chip" label={result.status} />
