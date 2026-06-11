@@ -1,4 +1,3 @@
-import { ArrowForwardRounded } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const hotspots = [
@@ -9,14 +8,6 @@ const hotspots = [
   { label: "Company", to: "/contact", className: "reference-hero__hotspot--company" },
   { label: "Login", to: "/login", className: "reference-hero__hotspot--login" },
   { label: "Get Started", to: "/rate-calculator", className: "reference-hero__hotspot--top-cta" },
-];
-
-const heroCtas = [
-  {
-    label: "Start Shipping Now",
-    to: "/rate-calculator",
-    className: "reference-hero__cta--main",
-  },
 ];
 
 const pulses = [
@@ -64,15 +55,6 @@ export default function ReferenceHero() {
           to={hotspot.to}
         />
       ))}
-
-      <div className="reference-hero__cta-layer" aria-label="Hero calls to action">
-        {heroCtas.map(({ label, to, className }) => (
-          <Link key={label} className={`reference-hero__cta ${className}`} to={to}>
-            <span>{label}</span>
-            <ArrowForwardRounded className="reference-hero__cta-icon" />
-          </Link>
-        ))}
-      </div>
     </section>
   );
 }

@@ -503,76 +503,6 @@ img {
   box-shadow: 0 0 0 3px rgba(51, 61, 129, 0.32);
 }
 
-.reference-hero__cta-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-}
-
-.reference-hero__cta {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  height: 5.2%;
-  min-height: 50px;
-  border-radius: 8px;
-  font-size: clamp(0.86rem, 0.88vw, 1rem);
-  font-weight: 800;
-  line-height: 1;
-  white-space: nowrap;
-  pointer-events: auto;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.reference-hero__cta:hover {
-  transform: translateY(-1px);
-}
-
-.reference-hero__cta:focus-visible {
-  outline: 3px solid rgba(51, 61, 129, 0.34);
-  outline-offset: 3px;
-}
-
-.reference-hero__cta--main {
-  left: 3.55%;
-  top: 59.7%;
-  width: 14%;
-  color: #fff;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 42%, var(--primary) 100%);
-  box-shadow: 0 18px 38px rgba(51, 61, 129, 0.22), 0 12px 28px rgba(206, 40, 38, 0.16);
-}
-
-.reference-hero__cta--main:hover {
-  box-shadow: 0 24px 42px rgba(51, 61, 129, 0.28), 0 12px 30px rgba(206, 40, 38, 0.2);
-}
-
-.reference-hero__cta--demo {
-  left: 19.1%;
-  top: 59.7%;
-  width: 13.5%;
-  color: var(--primary);
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid rgba(51, 61, 129, 0.72);
-  box-shadow: 0 14px 32px rgba(35, 41, 93, 0.08);
-}
-
-.reference-hero__cta--demo:hover {
-  border-color: var(--primary);
-  box-shadow: 0 18px 38px rgba(35, 41, 93, 0.12);
-}
-
-.reference-hero__cta-icon {
-  width: 20px !important;
-  height: 20px !important;
-  flex: 0 0 auto;
-}
-
 .reference-hero__hotspot--solutions {
   left: 25.6%;
   top: 4.5%;
@@ -2855,18 +2785,6 @@ img {
     display: none;
   }
 
-  .reference-hero__cta {
-    min-height: 46px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-  }
-
-  .reference-hero__cta--main {
-    left: 5%;
-    top: 59.2%;
-    width: 44%;
-  }
-
   .landing-hero {
     min-height: auto;
     padding: 26px 0 64px;
@@ -2952,21 +2870,6 @@ img {
     width: 100%;
     left: 0;
     object-position: center top;
-  }
-
-  .reference-hero__cta {
-    min-height: 42px;
-    gap: 6px;
-    font-size: clamp(0.72rem, 3vw, 0.82rem);
-  }
-
-  .reference-hero__cta--main {
-    width: 56%;
-  }
-
-  .reference-hero__cta-icon {
-    width: 18px !important;
-    height: 18px !important;
   }
 
   .reference-hero__pulse--map,
