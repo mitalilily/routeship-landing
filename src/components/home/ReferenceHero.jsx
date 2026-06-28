@@ -57,6 +57,10 @@ export default function ReferenceHero() {
             to={hotspot.to}
           />
         ))}
+
+        <div className="reference-hero__brand-fix" aria-hidden="true">
+          <span>Powered by Intlexpress.</span>
+        </div>
       </div>
 
       <Link className="reference-hero__mobile-cta landing-button landing-button--primary" to="/rate-calculator">
