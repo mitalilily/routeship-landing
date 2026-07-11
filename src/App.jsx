@@ -229,10 +229,10 @@ function Hero() {
 function BrandStrip() {
   return (
     <section className="brands" aria-label="Trusted brands">
-      <p>THE OPERATING LAYER BEHIND FAST-MOVING BRANDS</p>
+      <p>CONNECTED TO INDIA'S LEADING COURIER NETWORK</p>
       <div className="brand-marquee"><div>
-        <strong>NOVA</strong><strong>unfold</strong><strong>HUSH.</strong><strong>daybreak</strong><strong>ORBITAL</strong><strong>kindred</strong>
-        <strong>NOVA</strong><strong>unfold</strong><strong>HUSH.</strong><strong>daybreak</strong><strong>ORBITAL</strong><strong>kindred</strong>
+        <strong>DELHIVERY</strong><strong>BLUE DART</strong><strong>DTDC</strong><strong>XPRESSBEES</strong><strong>EKART</strong><strong>INDIA POST</strong>
+        <strong>DELHIVERY</strong><strong>BLUE DART</strong><strong>DTDC</strong><strong>XPRESSBEES</strong><strong>EKART</strong><strong>INDIA POST</strong>
       </div></div>
     </section>
   );
