@@ -117,6 +117,10 @@ async function run() {
     assert.equal(await evaluate("document.querySelectorAll('.webgl canvas').length"), 1, "Three.js canvas should render");
     assert.equal(await evaluate("document.querySelectorAll('.feature-card').length"), 6);
     assert.equal(await evaluate("document.querySelectorAll('.price-card').length"), 3);
+    assert.equal(await evaluate("document.querySelectorAll('.partner-grid img').length"), 6, "Courier logos should render");
+    assert.equal(await evaluate("document.querySelectorAll('.momentum-rail').length"), 1, "Advertising motion rail should render");
+    assert.equal(await evaluate("document.querySelector('.logo img').src.includes('routeship-logo-transparent.png')"), true, "Transparent logo should be used");
+    assert.equal(await evaluate("document.querySelector('.avatar img') !== null"), true, "Testimonial portrait should render");
 
     const initialRate = await evaluate("document.querySelector('.estimate strong').innerText");
     await evaluate(`(() => {
@@ -141,6 +145,7 @@ async function run() {
 
     const rateText = await navigate("/rate-calculator");
     assert.ok(rateText.includes("Clear rates."));
+    assert.equal(await evaluate("document.querySelectorAll('.page-hero .webgl canvas').length"), 1, "Rate calculator WebGL should render");
     const firstCourierPrice = await evaluate("document.querySelector('.courier-result > strong').innerText");
     await evaluate(`(() => {
       const input = document.querySelector('input[type="number"]');
@@ -156,6 +161,7 @@ async function run() {
     const weightText = await navigate("/weight-calculator");
     assert.ok(weightText.includes("Measure once."));
     assert.equal(await evaluate("document.querySelectorAll('.weight-results strong').length"), 2);
+    assert.equal(await evaluate("document.querySelectorAll('.page-hero .webgl canvas').length"), 1, "Weight calculator WebGL should render");
 
     const loginText = await navigate("/login");
     assert.ok(loginText.includes("Welcome back."));

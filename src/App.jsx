@@ -6,12 +6,12 @@ const BLUE = 0x0b3dbb;
 const ORANGE = 0xff4b0a;
 
 const features = [
-  ["01", "One smart dashboard", "Orders, labels, NDR, tracking and analytics — finally speaking the same language."],
-  ["02", "Rate intelligence", "Compare live courier rates and delivery performance before every shipment."],
-  ["03", "Branded tracking", "Turn every tracking check into a clear, reassuring extension of your brand."],
-  ["04", "NDR automation", "Recover risky deliveries with automated buyer outreach and rapid action loops."],
-  ["05", "COD reconciliation", "Know what is collected, remitted and pending without spreadsheet archaeology."],
-  ["06", "Actionable analytics", "See cost, RTO and performance patterns early enough to actually change them."],
+  ["01", "One smart dashboard", "Orders, labels, NDR, tracking and analytics — finally speaking the same language.", "grid"],
+  ["02", "Rate intelligence", "Compare live courier rates and delivery performance before every shipment.", "wallet"],
+  ["03", "Branded tracking", "Turn every tracking check into a clear, reassuring extension of your brand.", "pin"],
+  ["04", "NDR automation", "Recover risky deliveries with automated buyer outreach and rapid action loops.", "spark"],
+  ["05", "COD reconciliation", "Know what is collected, remitted and pending without spreadsheet archaeology.", "coins"],
+  ["06", "Actionable analytics", "See cost, RTO and performance patterns early enough to actually change them.", "chart"],
 ];
 
 const faqs = [
@@ -30,11 +30,19 @@ function Icon({ name }) {
     box: <><path d="m4 7 8-4 8 4-8 4-8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/></>,
     menu: <><path d="M4 7h16M4 12h16M4 17h16"/></>,
     close: <><path d="m6 6 12 12M18 6 6 18"/></>,
+    grid: <><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></>,
+    wallet: <><path d="M4 7h14a2 2 0 0 1 2 2v9H6a2 2 0 0 1-2-2V7Z"/><path d="M4 7V6a2 2 0 0 1 2-2h10v3M15 12h5"/></>,
+    pin: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></>,
+    spark: <><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></>,
+    coins: <><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v5c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 11v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></>,
+    chart: <><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></>,
+    truck: <><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></>,
+    scan: <><path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M8 21H4a1 1 0 0 1-1-1v-4M16 21h4a1 1 0 0 0 1-1v-4M7 12h10"/></>,
   };
   return <svg aria-hidden="true" className="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
 }
 
-function WebGLScene() {
+function WebGLScene({ compact = false }) {
   const mount = useRef(null);
 
   useEffect(() => {
@@ -52,10 +60,16 @@ function WebGLScene() {
     scene.add(group);
 
     const core = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(1.5, 2),
-      new THREE.MeshBasicMaterial({ color: BLUE, wireframe: true, transparent: true, opacity: 0.5 })
+      new THREE.SphereGeometry(compact ? 1.35 : 1.65, 28, 18),
+      new THREE.MeshBasicMaterial({ color: BLUE, wireframe: true, transparent: true, opacity: 0.52 })
     );
     group.add(core);
+
+    const innerGlow = new THREE.Mesh(
+      new THREE.SphereGeometry(compact ? 1.22 : 1.5, 24, 16),
+      new THREE.MeshBasicMaterial({ color: 0xf4eee4, transparent: true, opacity: 0.72 })
+    );
+    group.add(innerGlow);
 
     const ringMaterial = new THREE.MeshBasicMaterial({ color: ORANGE, wireframe: true, transparent: true, opacity: 0.6 });
     [2.15, 2.65, 3.1].forEach((radius, index) => {
@@ -63,6 +77,22 @@ function WebGLScene() {
       ring.rotation.x = 1.1 + index * 0.35;
       ring.rotation.y = index * 0.7;
       group.add(ring);
+    });
+
+    const routeMovers = [];
+    const routeSpecs = [
+      [[-1.45, .35, .55], [0, 2.35, 1.25], [1.35, -.2, .7], ORANGE],
+      [[-.9, -1.1, .75], [.2, .55, 2.2], [1.4, .65, .2], BLUE],
+      [[-1.25, .75, -.5], [0, 2.1, -.2], [.9, -.95, -.65], ORANGE],
+    ];
+    routeSpecs.forEach(([start, control, end, color], index) => {
+      const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(...start), new THREE.Vector3(...control), new THREE.Vector3(...end));
+      const route = new THREE.Mesh(new THREE.TubeGeometry(curve, 48, .022, 6, false), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: .9 }));
+      group.add(route);
+      const mover = new THREE.Mesh(new THREE.BoxGeometry(.18, .18, .18), new THREE.MeshBasicMaterial({ color }));
+      mover.userData = { curve, offset: index / routeSpecs.length };
+      routeMovers.push(mover);
+      group.add(mover);
     });
 
     const boxGeometry = new THREE.BoxGeometry(0.23, 0.23, 0.23);
@@ -106,6 +136,7 @@ function WebGLScene() {
         group.rotation.x += (my - group.rotation.x) * 0.025;
         group.rotation.z += (mx - group.rotation.z) * 0.018;
         core.scale.setScalar(1 + Math.sin(time * 0.0012) * 0.035);
+        routeMovers.forEach((mover) => mover.position.copy(mover.userData.curve.getPoint((time * .00008 + mover.userData.offset) % 1)));
       }
       renderer.render(scene, camera);
       frame = requestAnimationFrame(render);
@@ -121,9 +152,9 @@ function WebGLScene() {
       particlesGeometry.dispose();
       host.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [compact]);
 
-  return <div className="webgl" ref={mount} aria-hidden="true" />;
+  return <div className={`webgl ${compact ? "webgl-compact" : ""}`} ref={mount} aria-hidden="true" />;
 }
 
 function Reveal({ children, className = "" }) {
@@ -145,7 +176,7 @@ function Reveal({ children, className = "" }) {
 function Logo({ light = false }) {
   return (
     <a className={`logo ${light ? "logo-light" : ""}`} href="/" aria-label="RouteShip home">
-      <span className="logo-crop"><img src="/media/routeship-logo.png" alt="RouteShip" /></span>
+      <span className="logo-crop"><img src="/media/routeship-logo-transparent.png" alt="RouteShip" /></span>
     </a>
   );
 }
@@ -177,6 +208,9 @@ function Hero() {
       <Header />
       <div className="hero-orbit" aria-hidden="true" />
       <WebGLScene />
+      <div className="hero-widget widget-scan"><span><Icon name="scan"/></span><div><b>Parcel scanned</b><small>Mumbai hub · just now</small></div></div>
+      <div className="hero-widget widget-route"><span><Icon name="truck"/></span><div><b>DEL → BLR</b><small>On time · 1,740 km</small></div></div>
+      <div className="hero-widget widget-rate"><strong>₹68</strong><small>BEST LIVE RATE</small></div>
       <div className="hero-content shell">
         <div className="eyebrow"><span /> Built for ambitious commerce</div>
         <h1>Every order.<br/><em>In motion.</em></h1>
@@ -202,6 +236,11 @@ function BrandStrip() {
       </div></div>
     </section>
   );
+}
+
+function MomentumRail() {
+  const items = ["PICKUP IN 24 HOURS", "12+ COURIER PARTNERS", "SMART RATE MATCHING", "LIVE NDR RECOVERY", "PAN-INDIA REACH"];
+  return <div className="momentum-rail" aria-label="RouteShip advantages"><div>{[...items,...items].map((item,index)=><span key={`${item}-${index}`}><Icon name={index % 2 ? "truck" : "box"}/>{item}<b>↗</b></span>)}</div></div>;
 }
 
 function Problem() {
@@ -251,7 +290,7 @@ function Features() {
         <Reveal className="section-kicker"><span>03</span> CORE FEATURES</Reveal>
         <Reveal className="section-head"><h2>Less busywork.<br/><em>More momentum.</em></h2><p>Everything your operations team needs, without the weight of enterprise software.</p></Reveal>
         <div className="feature-grid">
-          {features.map(([num, title, text]) => <Reveal className="feature-card" key={title}><div className="feature-top"><span>{num}</span><i>+</i></div><h3>{title}</h3><p>{text}</p><div className="feature-line" /></Reveal>)}
+          {features.map(([num, title, text, icon]) => <Reveal className="feature-card" key={title}><div className="feature-top"><span>{num}</span><i><Icon name={icon}/></i></div><div className="feature-orb"><Icon name={icon}/></div><h3>{title}</h3><p>{text}</p><div className="feature-line" /></Reveal>)}
         </div>
       </div>
     </section>
@@ -259,7 +298,11 @@ function Features() {
 }
 
 function Ecosystem() {
-  const couriers = ["DELHIVERY", "Blue Dart", "DTDC", "XPRESSBEES", "Ecom Express", "India Post"];
+  const couriers = [
+    ["Delhivery", "/partner-logos/delhivery.png"], ["Blue Dart", "/partner-logos/blue-dart.png"],
+    ["DTDC", "/partner-logos/dtdc.avif"], ["Xpressbees", "/partner-logos/xpressbees.png"],
+    ["Ekart", "/partner-logos/ekart.webp"], ["India Post", "/partner-logos/india-post-mark.svg"],
+  ];
   const integrations = ["shopify", "Woo", "amazon", "MAGENTO", "REST API"];
   return (
     <section className="ecosystem section">
@@ -267,7 +310,7 @@ function Ecosystem() {
         <Reveal className="ecosystem-copy"><div className="section-kicker dark"><span>04</span> YOUR ECOSYSTEM</div><h2>Works with the<br/><em>world you use.</em></h2><p>One connection to the partners and platforms that keep modern commerce moving.</p></Reveal>
         <Reveal className="partner-panel">
           <div className="partner-title"><span>COURIER PARTNERS</span><b>12+</b></div>
-          <div className="partner-grid">{couriers.map((name) => <div key={name}>{name}</div>)}</div>
+          <div className="partner-grid">{couriers.map(([name,src]) => <div key={name}><img src={src} alt={name}/><span>{name}</span></div>)}</div>
           <div className="partner-title integration-title"><span>INTEGRATIONS</span><b>30+</b></div>
           <div className="integration-row">{integrations.map((name) => <div key={name}>{name}</div>)}</div>
         </Reveal>
@@ -320,9 +363,9 @@ function Calculator() {
 
 function Testimonials() {
   const stories = [
-    ["RouteShip gave us the confidence to double order volume without doubling the operations team.", "ANANYA MEHTA", "CO-FOUNDER, NOURISH LABS", "2.4×", "FASTER DISPATCH"],
-    ["The NDR workflow changed our customer experience. We recover orders before they become complaints.", "ROHAN KAPOOR", "OPERATIONS, DAYBREAK", "31%", "LOWER RTO"],
-    ["For the first time, courier decisions are based on our own delivery data—not guesswork.", "SANA MIRZA", "FOUNDER, KINDRED", "18%", "LOWER COST"],
+    ["RouteShip gave us the confidence to double order volume without doubling the operations team.", "ANANYA MEHTA", "CO-FOUNDER, NOURISH LABS", "2.4×", "FASTER DISPATCH", "/media/testimonial-ananya.jpg"],
+    ["The NDR workflow changed our customer experience. We recover orders before they become complaints.", "ROHAN KAPOOR", "OPERATIONS, DAYBREAK", "31%", "LOWER RTO", "/media/testimonial-rohan.jpg"],
+    ["For the first time, courier decisions are based on our own delivery data—not guesswork.", "SANA MIRZA", "FOUNDER, KINDRED", "18%", "LOWER COST", "/media/testimonial-sana.jpg"],
   ];
   const [active, setActive] = useState(0);
   return (
@@ -331,7 +374,7 @@ function Testimonials() {
         <Reveal className="section-kicker dark"><span>07</span> CUSTOMER STORIES</Reveal>
         <div className="testimonial-stage">
           <button aria-label="Previous testimonial" onClick={() => setActive((active + stories.length - 1) % stories.length)}>←</button>
-          <div key={active} className="testimonial-content"><div className="quote-mark">“</div><blockquote>{stories[active][0]}</blockquote><div className="person"><div className="avatar">{stories[active][1].split(" ").map(n => n[0]).join("")}</div><p><strong>{stories[active][1]}</strong><span>{stories[active][2]}</span></p></div></div>
+          <div key={active} className="testimonial-content"><div className="quote-mark">“</div><blockquote>{stories[active][0]}</blockquote><div className="person"><div className="avatar"><img src={stories[active][5]} alt={stories[active][1]}/></div><p><strong>{stories[active][1]}</strong><span>{stories[active][2]}</span></p></div></div>
           <div className="story-stat"><strong>{stories[active][3]}</strong><span>{stories[active][4]}</span></div>
           <button aria-label="Next testimonial" onClick={() => setActive((active + 1) % stories.length)}>→</button>
         </div>
@@ -377,11 +420,12 @@ function Footer() {
 }
 
 function LandingPage() {
-  return <><Hero/><BrandStrip/><main><Problem/><Solution/><Features/><Ecosystem/><HowItWorks/><Calculator/><Testimonials/><Pricing/><FAQ/><FinalCTA/></main><Footer/></>;
+  return <><Hero/><BrandStrip/><MomentumRail/><main><Problem/><Solution/><Features/><Ecosystem/><HowItWorks/><Calculator/><Testimonials/><Pricing/><FAQ/><FinalCTA/></main><Footer/></>;
 }
 
 function PageFrame({ eyebrow, title, accent, copy, children }) {
-  return <div className="subpage"><Header standalone/><main><section className="page-hero"><div className="page-hero-orbit"/><div className="shell"><div className="section-kicker dark"><span>ROUTESHIP</span>{eyebrow}</div><h1>{title}<br/><em>{accent}</em></h1><p>{copy}</p></div></section>{children}</main><Footer/></div>;
+  const scene = eyebrow.includes("CALCULATOR");
+  return <div className="subpage"><Header standalone/><main><section className={`page-hero ${scene ? "page-hero-scene" : ""}`}><div className="page-hero-orbit"/>{scene && <WebGLScene compact/>}<div className="shell"><div className="section-kicker dark"><span>ROUTESHIP</span>{eyebrow}</div><h1>{title}<br/><em>{accent}</em></h1><p>{copy}</p></div></section>{children}</main><Footer/></div>;
 }
 
 const trackingEvents = [
