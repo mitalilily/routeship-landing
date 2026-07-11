@@ -59,6 +59,23 @@ function WebGLScene({ compact = false }) {
     const group = new THREE.Group();
     scene.add(group);
 
+    const createParcel = (size = .24) => {
+      const parcel = new THREE.Group();
+      const cardboard = new THREE.Mesh(new THREE.BoxGeometry(size * 1.15, size, size), new THREE.MeshBasicMaterial({ color: 0xb9783f }));
+      parcel.add(cardboard);
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(cardboard.geometry), new THREE.LineBasicMaterial({ color: 0x6f3d1d, transparent: true, opacity: .9 }));
+      parcel.add(edges);
+      const tape = new THREE.Mesh(new THREE.BoxGeometry(size * .18, size * 1.015, size * 1.015), new THREE.MeshBasicMaterial({ color: ORANGE }));
+      parcel.add(tape);
+      const label = new THREE.Mesh(new THREE.PlaneGeometry(size * .48, size * .3), new THREE.MeshBasicMaterial({ color: 0xf7efe4 }));
+      label.position.set(size * .18, 0, size * .505);
+      parcel.add(label);
+      const barcode = new THREE.Mesh(new THREE.PlaneGeometry(size * .28, size * .055), new THREE.MeshBasicMaterial({ color: BLUE }));
+      barcode.position.set(size * .18, 0, size * .51);
+      parcel.add(barcode);
+      return parcel;
+    };
+
     const core = new THREE.Mesh(
       new THREE.SphereGeometry(compact ? 1.35 : 1.65, 28, 18),
       new THREE.MeshBasicMaterial({ color: BLUE, wireframe: true, transparent: true, opacity: 0.52 })
@@ -84,26 +101,43 @@ function WebGLScene({ compact = false }) {
       [[-1.45, .35, .55], [0, 2.35, 1.25], [1.35, -.2, .7], ORANGE],
       [[-.9, -1.1, .75], [.2, .55, 2.2], [1.4, .65, .2], BLUE],
       [[-1.25, .75, -.5], [0, 2.1, -.2], [.9, -.95, -.65], ORANGE],
+      [[-1.4, -.35, -.35], [-.1, -2.15, .8], [1.28, .3, -.5], BLUE],
+      [[-.45, 1.45, .2], [1.8, 1.65, .75], [1.15, -.85, .4], ORANGE],
     ];
     routeSpecs.forEach(([start, control, end, color], index) => {
       const curve = new THREE.QuadraticBezierCurve3(new THREE.Vector3(...start), new THREE.Vector3(...control), new THREE.Vector3(...end));
       const route = new THREE.Mesh(new THREE.TubeGeometry(curve, 48, .022, 6, false), new THREE.MeshBasicMaterial({ color, transparent: true, opacity: .9 }));
       group.add(route);
-      const mover = new THREE.Mesh(new THREE.BoxGeometry(.18, .18, .18), new THREE.MeshBasicMaterial({ color }));
+      const mover = createParcel(.2 + (index % 2) * .035);
       mover.userData = { curve, offset: index / routeSpecs.length };
       routeMovers.push(mover);
       group.add(mover);
+      [start, end].forEach((point, pointIndex) => {
+        const node = new THREE.Mesh(new THREE.SphereGeometry(.07, 10, 10), new THREE.MeshBasicMaterial({ color: pointIndex ? ORANGE : BLUE }));
+        node.position.set(...point);
+        group.add(node);
+      });
     });
 
-    const boxGeometry = new THREE.BoxGeometry(0.23, 0.23, 0.23);
+    const orbitParcels = [];
     for (let i = 0; i < 16; i += 1) {
-      const material = new THREE.MeshBasicMaterial({ color: i % 3 ? BLUE : ORANGE, wireframe: true });
-      const box = new THREE.Mesh(boxGeometry, material);
+      const box = createParcel(.18 + (i % 4) * .025);
       const angle = (i / 16) * Math.PI * 2;
       box.position.set(Math.cos(angle) * (2.5 + (i % 3) * 0.35), Math.sin(angle * 1.7) * 1.4, Math.sin(angle) * 1.3);
       box.rotation.set(angle, angle * 0.6, 0);
+      box.userData.floatOffset = i * .6;
+      orbitParcels.push(box);
       group.add(box);
     }
+
+    const hub = new THREE.Group();
+    const hubBase = new THREE.Mesh(new THREE.CylinderGeometry(.42, .52, .18, 6), new THREE.MeshBasicMaterial({ color: BLUE }));
+    const hubRoof = new THREE.Mesh(new THREE.ConeGeometry(.52, .28, 6), new THREE.MeshBasicMaterial({ color: ORANGE }));
+    hubRoof.position.y = .23;
+    hub.add(hubBase, hubRoof);
+    hub.position.set(0, -2.35, .15);
+    hub.rotation.z = .06;
+    group.add(hub);
 
     const particlePositions = new Float32Array(450 * 3);
     for (let i = 0; i < 450; i += 1) {
@@ -136,7 +170,16 @@ function WebGLScene({ compact = false }) {
         group.rotation.x += (my - group.rotation.x) * 0.025;
         group.rotation.z += (mx - group.rotation.z) * 0.018;
         core.scale.setScalar(1 + Math.sin(time * 0.0012) * 0.035);
-        routeMovers.forEach((mover) => mover.position.copy(mover.userData.curve.getPoint((time * .00008 + mover.userData.offset) % 1)));
+        routeMovers.forEach((mover, index) => {
+          mover.position.copy(mover.userData.curve.getPoint((time * .00008 + mover.userData.offset) % 1));
+          mover.rotation.y = time * .001 + index;
+          mover.rotation.x = Math.sin(time * .0012 + index) * .25;
+        });
+        orbitParcels.forEach((parcel) => {
+          parcel.rotation.x += .006;
+          parcel.rotation.y += .008;
+          parcel.position.y += Math.sin(time * .0015 + parcel.userData.floatOffset) * .0008;
+        });
       }
       renderer.render(scene, camera);
       frame = requestAnimationFrame(render);
