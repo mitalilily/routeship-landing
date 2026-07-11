@@ -4,7 +4,7 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 export const createContact = asyncHandler(async (req, res) => {
   const contact = await Contact.create(req.body);
   res.status(201).json({
-    message: "Your inquiry has been saved for the Intlexpress team.",
+    message: "Your inquiry has been saved for the RouteShip team.",
     contact,
   });
 });

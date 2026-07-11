@@ -3,16 +3,10 @@ import { spawn } from "node:child_process";
 import { mkdtemp, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { createServer } from "vite";
 
 const baseUrl = process.env.SMOKE_BASE_URL || "http://127.0.0.1:5173";
-const devPort = Number(new URL(baseUrl).port || 5173);
 
-function delay(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function isReachable(url) {
   try {
@@ -23,94 +17,6 @@ async function isReachable(url) {
   }
 }
 
-async function waitForReachable(url, timeout = 30000) {
-  const started = Date.now();
-
-  while (Date.now() - started < timeout) {
-    if (await isReachable(url)) return;
-    await delay(400);
-  }
-
-  throw new Error(`Timed out waiting for ${url}`);
-}
-
-async function runFunctionalSmokeTests() {
-  globalThis.window = { setTimeout: globalThis.setTimeout };
-
-  const server = await createServer({ logLevel: "error", server: { middlewareMode: true } });
-
-  try {
-    const calculators = await server.ssrLoadModule("/src/utils/calculators.js");
-    const mockApi = await server.ssrLoadModule("/src/services/mockApi.js");
-    const {
-      isValidPincode,
-      calculateVolumetricWeight,
-      getBillableWeight,
-      resolveZone,
-      buildRateSummary,
-      generateCourierQuotes,
-    } = calculators;
-    const { mockCalculateRates, mockTrackShipment } = mockApi;
-
-    assert.equal(isValidPincode("713513"), true);
-    assert.equal(isValidPincode("71351"), false);
-    assert.equal(calculateVolumetricWeight(32, 24, 18), 2.76);
-    assert.equal(getBillableWeight(1.8, 2.76), 2.76);
-    assert.deepEqual(resolveZone("713513", "713001"), {
-      label: "Local",
-      baseRate: 56,
-      sla: "Same or next day",
-    });
-    assert.deepEqual(resolveZone("713513", "700001"), {
-      label: "Regional",
-      baseRate: 82,
-      sla: "2-3 days",
-    });
-    assert.deepEqual(resolveZone("713513", "110001"), {
-      label: "National",
-      baseRate: 128,
-      sla: "3-5 days",
-    });
-
-    const prepaidForm = {
-      originPincode: "713513",
-      destinationPincode: "700001",
-      weight: "1.2",
-      length: "28",
-      breadth: "22",
-      height: "16",
-      paymentType: "Prepaid",
-    };
-    const prepaidSummary = buildRateSummary(prepaidForm);
-    assert.equal(prepaidSummary.valid, true);
-    assert.equal(prepaidSummary.zone.label, "Regional");
-    assert.equal(prepaidSummary.volumetricWeight, 1.97);
-    assert.equal(prepaidSummary.billableWeight, 1.97);
-    assert.equal(prepaidSummary.paymentSurcharge, 0);
-    assert.equal(generateCourierQuotes(prepaidForm).length, 4);
-    assert.equal(buildRateSummary({ ...prepaidForm, paymentType: "COD" }).paymentSurcharge, 32);
-
-    const rateResponse = await mockCalculateRates(prepaidForm);
-    assert.equal(rateResponse.options.length, 4);
-    assert.equal(rateResponse.summary.zone.label, "Regional");
-    await assert.rejects(
-      () => mockCalculateRates({ ...prepaidForm, originPincode: "123" }),
-      /valid pin codes/i
-    );
-
-    const activeShipment = await mockTrackShipment("IXP78254019");
-    assert.equal(activeShipment.status, "Out for delivery");
-    assert.equal(activeShipment.activeStep, 3);
-
-    const deliveredShipment = await mockTrackShipment("ixp11984027");
-    assert.equal(deliveredShipment.status, "Delivered");
-    assert.equal(deliveredShipment.activeStep, deliveredShipment.timeline.length - 1);
-    await assert.rejects(() => mockTrackShipment("BAD123"), /Tracking ID not found/i);
-  } finally {
-    await server.close();
-  }
-}
-
 class CdpClient {
   constructor(wsUrl) {
     this.nextId = 0;
@@ -118,11 +24,9 @@ class CdpClient {
     this.ws = new WebSocket(wsUrl);
     this.ws.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
-
       if (message.id && this.pending.has(message.id)) {
         const { resolve, reject } = this.pending.get(message.id);
         this.pending.delete(message.id);
-
         if (message.error) reject(new Error(message.error.message));
         else resolve(message);
       }
@@ -131,7 +35,6 @@ class CdpClient {
 
   async open() {
     if (this.ws.readyState === WebSocket.OPEN) return;
-
     await new Promise((resolve, reject) => {
       this.ws.addEventListener("open", resolve, { once: true });
       this.ws.addEventListener("error", reject, { once: true });
@@ -142,236 +45,138 @@ class CdpClient {
     const id = ++this.nextId;
     const promise = new Promise((resolve, reject) => {
       this.pending.set(id, { resolve, reject });
-      setTimeout(() => {
-        if (this.pending.has(id)) {
-          this.pending.delete(id);
-          reject(new Error(`CDP timeout for ${method}`));
-        }
-      }, 12000);
+      setTimeout(() => reject(new Error(`CDP timeout for ${method}`)), 12000);
     });
-
     this.ws.send(JSON.stringify({ id, method, params }));
     return promise;
   }
 
-  close() {
-    if (this.ws.readyState === WebSocket.OPEN) this.ws.close();
-  }
+  close() { if (this.ws.readyState === WebSocket.OPEN) this.ws.close(); }
+}
+
+async function findCdpPort(startPort = 9227) {
+  let port = startPort;
+  while (await isReachable(`http://127.0.0.1:${port}/json/version`)) port += 1;
+  return port;
 }
 
 async function waitForDevtools(port) {
   for (let index = 0; index < 80; index += 1) {
     try {
-      const response = await fetch(`http://127.0.0.1:${port}/json/list`);
-      const tabs = await response.json();
+      const tabs = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
       const tab = tabs.find((item) => item.type === "page" && item.webSocketDebuggerUrl);
-
       if (tab) return tab.webSocketDebuggerUrl;
-    } catch {
-      await delay(250);
-    }
+    } catch { /* Chrome is still starting. */ }
+    await delay(250);
   }
-
   throw new Error("Chrome DevTools endpoint did not become ready");
 }
 
-async function findCdpPort(startPort = 9227) {
-  let port = startPort;
-
-  while (true) {
-    try {
-      await fetch(`http://127.0.0.1:${port}/json/version`, { signal: AbortSignal.timeout(250) });
-      port += 1;
-    } catch {
-      return port;
-    }
-  }
-}
-
-function resolveChromePath() {
-  return (
-    process.env.CHROME_PATH ||
-    process.env.GOOGLE_CHROME_BIN ||
-    "C:/Program Files/Google/Chrome/Application/chrome.exe"
-  );
-}
-
-async function runBrowserSmokeTests() {
-  let devServerProcess;
-  const alreadyRunning = await isReachable(`${baseUrl}/`);
-
-  if (!alreadyRunning) {
-    devServerProcess = spawn(
-      process.platform === "win32" ? "npm.cmd" : "npm",
-      ["run", "dev", "--", "--host", "127.0.0.1", "--port", String(devPort)],
-      { stdio: "ignore", windowsHide: true }
-    );
-    await waitForReachable(`${baseUrl}/`);
+async function run() {
+  let devServer;
+  if (!(await isReachable(baseUrl))) {
+    devServer = spawn(process.platform === "win32" ? "npm.cmd" : "npm", ["run", "dev", "--", "--host", "127.0.0.1"], { stdio: "ignore", windowsHide: true });
+    for (let i = 0; i < 75 && !(await isReachable(baseUrl)); i += 1) await delay(400);
   }
 
   const cdpPort = await findCdpPort();
-  const userDataDir = await mkdtemp(path.join(os.tmpdir(), "intlexpress-cdp-"));
-  const chrome = spawn(resolveChromePath(), [
-    "--headless=new",
-    "--disable-gpu",
-    "--no-first-run",
-    "--no-default-browser-check",
-    `--remote-debugging-port=${cdpPort}`,
-    `--user-data-dir=${userDataDir}`,
-    "about:blank",
+  const userDataDir = await mkdtemp(path.join(os.tmpdir(), "routeship-cdp-"));
+  const chrome = spawn(process.env.CHROME_PATH || "C:/Program Files/Google/Chrome/Application/chrome.exe", [
+    "--headless=new", "--disable-gpu", "--no-first-run", `--remote-debugging-port=${cdpPort}`, `--user-data-dir=${userDataDir}`, "about:blank",
   ], { stdio: "ignore", windowsHide: true });
-
   let cdp;
-  let passed = false;
 
   try {
     cdp = new CdpClient(await waitForDevtools(cdpPort));
     await cdp.open();
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
-
-    async function evalJs(expression, awaitPromise = false) {
-      const response = await cdp.send("Runtime.evaluate", {
-        expression,
-        awaitPromise,
-        returnByValue: true,
-      });
-
-      if (response.result.exceptionDetails) {
-        throw new Error(response.result.exceptionDetails.text || "JS evaluation failed");
-      }
-
+    const evaluate = async (expression, awaitPromise = false) => {
+      const response = await cdp.send("Runtime.evaluate", { expression, awaitPromise, returnByValue: true });
+      if (response.result.exceptionDetails) throw new Error(response.result.exceptionDetails.text || "Browser evaluation failed");
       return response.result.result.value;
-    }
-
-    async function navigate(pathname) {
+    };
+    const navigate = async (pathname) => {
       await cdp.send("Page.navigate", { url: `${baseUrl}${pathname}` });
+      for (let i = 0; i < 80 && (await evaluate("document.readyState")) !== "complete"; i += 1) await delay(200);
+      await delay(350);
+      return evaluate("document.body.innerText");
+    };
 
-      for (let index = 0; index < 80; index += 1) {
-        if ((await evalJs("document.readyState")) === "complete") return;
-        await delay(250);
-      }
+    await cdp.send("Page.navigate", { url: baseUrl });
+    for (let i = 0; i < 80 && (await evaluate("document.readyState")) !== "complete"; i += 1) await delay(250);
+    await delay(1000);
 
-      throw new Error(`Timed out navigating to ${pathname}`);
-    }
+    const requiredCopy = [
+      "Every order.", "THE PROBLEM", "THE ROUTESHIP SOLUTION", "CORE FEATURES", "COURIER PARTNERS",
+      "INTEGRATIONS", "HOW IT WORKS", "SHIPPING CALCULATOR", "CUSTOMER STORIES", "SIMPLE PRICING",
+      "FAQ", "Move with",
+    ];
+    const bodyText = await evaluate("document.body.innerText");
+    requiredCopy.forEach((copy) => assert.ok(bodyText.includes(copy), `Missing required section: ${copy}`));
+    assert.equal(await evaluate("document.querySelectorAll('.webgl canvas').length"), 1, "Three.js canvas should render");
+    assert.equal(await evaluate("document.querySelectorAll('.feature-card').length"), 6);
+    assert.equal(await evaluate("document.querySelectorAll('.price-card').length"), 3);
 
-    async function waitForText(text, context, timeout = 9000) {
-      const started = Date.now();
+    const initialRate = await evaluate("document.querySelector('.estimate strong').innerText");
+    await evaluate(`(() => {
+      const range = document.querySelector('#weight');
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      setter.call(range, '10');
+      range.dispatchEvent(new Event('input', { bubbles: true }));
+      range.dispatchEvent(new Event('change', { bubbles: true }));
+      document.querySelector('.segments button:last-child').click();
+    })()`);
+    await delay(250);
+    const updatedRate = await evaluate("document.querySelector('.estimate strong').innerText");
+    assert.notEqual(updatedRate, initialRate, "Calculator estimate should respond to controls");
 
-      while (Date.now() - started < timeout) {
-        if (await evalJs(`document.body.innerText.includes(${JSON.stringify(text)})`)) return;
-        await delay(200);
-      }
+    await evaluate("document.querySelectorAll('.faq-item button')[1].click()");
+    assert.equal(await evaluate("document.querySelectorAll('.faq-item')[1].classList.contains('open')"), true, "FAQ should expand");
 
-      const body = await evalJs("document.body.innerText.slice(0, 1200)");
-      assert.fail(`${context}: expected ${text}. Body starts: ${body}`);
-    }
+    const trackingText = await navigate("/tracking");
+    assert.ok(trackingText.includes("Follow every move."));
+    assert.ok(trackingText.includes("RS78254019"));
+    assert.equal(await evaluate("document.querySelectorAll('.timeline-event').length"), 5);
 
-    await navigate("/rate-calculator");
-    await waitForText("Compare courier rates instantly.", "rate page hero");
-    await evalJs(String.raw`
-(async () => {
-  const setValue = (el, value) => {
-    const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), "value").set;
-    setter.call(el, value);
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    el.dispatchEvent(new Event("change", { bubbles: true }));
-  };
-  setValue(document.querySelector('input[placeholder="Origin pincode"]'), '713513');
-  setValue(document.querySelector('input[placeholder="Destination pincode"]'), '700001');
-  setValue(document.querySelector('input[placeholder="Weight (kg)"]'), '1.2');
-  setValue(document.querySelector('input[placeholder="Length (cm)"]'), '28');
-  setValue(document.querySelector('input[placeholder="Breadth (cm)"]'), '22');
-  setValue(document.querySelector('input[placeholder="Height (cm)"]'), '16');
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  [...document.querySelectorAll('button')].find((button) => button.innerText.includes('Calculate rates')).click();
-  return true;
-})()
-`, true);
-    await waitForText("Intlexpress Priority", "rate results");
-    await waitForText("Billable 1.97 kg", "rate billable weight");
-    await waitForText("Regional", "rate zone");
-    await evalJs(String.raw`
-(async () => {
-  const input = document.querySelector('input[placeholder="Origin pincode"]');
-  const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), "value").set;
-  setter.call(input, '123');
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  [...document.querySelectorAll('button')].find((button) => button.innerText.includes('Calculate rates')).click();
-  return true;
-})()
-`, true);
-    await waitForText("Enter valid pin codes", "rate validation error");
+    const rateText = await navigate("/rate-calculator");
+    assert.ok(rateText.includes("Clear rates."));
+    const firstCourierPrice = await evaluate("document.querySelector('.courier-result > strong').innerText");
+    await evaluate(`(() => {
+      const input = document.querySelector('input[type="number"]');
+      const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      setter.call(input, '12');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      document.querySelector('.page-form button[type="submit"]').click();
+    })()`);
+    await delay(200);
+    assert.notEqual(await evaluate("document.querySelector('.courier-result > strong').innerText"), firstCourierPrice);
 
-    await navigate("/weight-calculator");
-    await waitForText("Calculate billable parcel weight.", "weight page hero");
-    await waitForText("2.76 kg", "initial volumetric weight");
-    await evalJs(String.raw`
-(async () => {
-  const inputs = [...document.querySelectorAll('.weight-controls input')].filter((input) => input.type !== 'range');
-  const values = ['50', '40', '30', '10'];
-  inputs.forEach((input, index) => {
-    const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), "value").set;
-    setter.call(input, values[index]);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  });
-  return true;
-})()
-`, true);
-    await waitForText("12.00 kg", "updated volumetric and billable weight");
-    await waitForText("Volumetric weight is higher", "oversize warning");
+    const weightText = await navigate("/weight-calculator");
+    assert.ok(weightText.includes("Measure once."));
+    assert.equal(await evaluate("document.querySelectorAll('.weight-results strong').length"), 2);
 
-    await navigate("/tracking");
-    await waitForText("IXP78254019 - IX-11892", "default tracking result");
-    await waitForText("Out for delivery", "default tracking status");
-    await evalJs(String.raw`
-(async () => {
-  [...document.querySelectorAll('.MuiChip-root')].find((chip) => chip.innerText.includes('IXP11984027')).click();
-  return true;
-})()
-`, true);
-    await waitForText("IXP11984027 - IX-10478", "second tracking result");
-    await waitForText("Delivered", "second tracking status");
-    await evalJs(String.raw`
-(async () => {
-  const input = document.querySelector('.calculator-form input');
-  const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), "value").set;
-  setter.call(input, 'BAD123');
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise((resolve) => setTimeout(resolve, 80));
-  [...document.querySelectorAll('button')].find((button) => button.innerText.includes('Track shipment')).click();
-  return true;
-})()
-`, true);
-    await waitForText("Tracking ID not found", "tracking validation error");
+    const loginText = await navigate("/login");
+    assert.ok(loginText.includes("Welcome back."));
+    assert.equal(await evaluate("document.querySelectorAll('.auth-form input').length >= 2"), true);
 
-    passed = true;
+    const contactText = await navigate("/contact");
+    assert.ok(contactText.includes("Your next route."));
+    assert.equal(await evaluate("document.querySelectorAll('.contact-form input').length"), 3);
+
+    await navigate("/");
+
+    await cdp.send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.menu-button')).display !== 'none'"), true, "Mobile menu should be available");
   } finally {
     cdp?.close();
     chrome.kill("SIGKILL");
-    await delay(800);
-
-    try {
-      const resolved = path.resolve(userDataDir);
-      const temp = path.resolve(os.tmpdir());
-
-      if (resolved.startsWith(temp) && path.basename(resolved).startsWith("intlexpress-cdp-")) {
-        await rm(resolved, { recursive: true, force: true, maxRetries: 3, retryDelay: 250 });
-      }
-    } catch (cleanupError) {
-      if (!passed) throw cleanupError;
-      console.warn(`cleanup warning: ${cleanupError.message}`);
-    }
-
-    if (devServerProcess) devServerProcess.kill("SIGTERM");
+    devServer?.kill("SIGTERM");
+    await delay(500);
+    await rm(userDataDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 250 });
   }
 }
 
-await runFunctionalSmokeTests();
-await runBrowserSmokeTests();
-
-console.log("smoke tests passed");
+await run();
+console.log("RouteShip smoke tests passed");

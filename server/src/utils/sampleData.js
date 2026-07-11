@@ -1,27 +1,27 @@
 export const sampleUsers = [
   {
     name: "Operations Manager",
-    email: "ops@intlexpress.com",
-    password: "Intlexpress@123",
+    email: "ops@routeship.in",
+    password: "RouteShip@123",
     role: "admin",
     phone: "+910000000000",
-    company: "Intlexpress",
+    company: "RouteShip",
   },
   {
     name: "Dispatch Analyst",
-    email: "dispatch@intlexpress.com",
-    password: "Intlexpress@123",
+    email: "dispatch@routeship.in",
+    password: "RouteShip@123",
     role: "manager",
     phone: "+910000000000",
-    company: "Intlexpress",
+    company: "RouteShip",
   },
   {
     name: "Support Lead",
-    email: "support@intlexpress.co.in",
-    password: "Intlexpress@123",
+    email: "support@routeship.in",
+    password: "RouteShip@123",
     role: "support",
     phone: "+91-95717-11909",
-    company: "Intlexpress",
+    company: "RouteShip",
   },
 ];
 
@@ -47,7 +47,7 @@ export function buildSampleShipments(userId) {
         {
           key: "placed",
           title: "Order placed",
-          note: "Shipment booked on the Intlexpress dashboard",
+          note: "Shipment booked on the RouteShip dashboard",
           location: "Baramulla Hub",
           time: new Date("2026-04-09T09:12:00+05:30"),
         },
